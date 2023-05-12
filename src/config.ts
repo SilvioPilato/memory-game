@@ -1,0 +1,2 @@
+export const DEFAULT_SHUFFLE_TIMES = 10;
+export const DEFAULT_HIDE_TIME_MS = 500;
