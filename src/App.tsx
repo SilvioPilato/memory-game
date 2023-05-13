@@ -5,7 +5,7 @@ import { EndGame } from './components/EndGame';
 
 function App() {
   return (
-    <div className="flex flex-col justify-center items-center">
+    <div className="flex flex-col justify-center items-center font-sans">
       <Score />
       <CardGrid />
       <EndGame />

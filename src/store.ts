@@ -18,7 +18,6 @@ export type AppStore = {
     cardShown: Card | null,
     modalShown: boolean,
     leaderboard: Leaderboard,
-    shuffleCards: (times: number) => void,
     setCardShown: (card: Card | null) => void,
     setCardHidden: (card: Card) => void,
     flipCard: (card: Card) => void,
@@ -30,7 +29,7 @@ export type AppStore = {
 }
 
 export const useAppStore = create<AppStore>()(
-    persist(
+    persist<AppStore>(
         (set, get) => {
             console.log(get());
             return {
@@ -41,7 +40,6 @@ export const useAppStore = create<AppStore>()(
                 leaderboard: [],
                 setCardShown: (card: Card | null) => set({ cardShown: card }),
                 setCardHidden: (card: Card) => set((state) => ({ cards: state.cards.map((c) => c.id === card.id ? { ...c, hidden: true } : c) })),
-                shuffleCards: (times) => set((state) => ({ cards: shuffleDeck(state.cards, times) })),
                 updateScore: (amount: number) => set((state) => ({ score: state.score + amount })),
                 flipCard: (card) => set((state) => ({ cards: state.cards.map((c) => c.id === card.id ? { ...c, activeSide: c.activeSide === "front" ? "rear" : "front" } : c) })),
                 showModal: () => set({ modalShown: true }),
@@ -55,18 +53,3 @@ export const useAppStore = create<AppStore>()(
         }
     )
 );
-
-const shuffleDeck = (deck: Card[], times = 1) => {
-    let shuffledDeck = [...deck];
-
-    for (let t = 0; t < times; t++) {
-        for (let i = 0; i < shuffleDeck.length; i++) {
-            const j = Math.round(Math.random() * (deck.length - 1));
-            const toSwap = shuffledDeck[j];
-            shuffledDeck[j] = shuffledDeck[i];
-            shuffledDeck[i] = toSwap;   
-        }
-    }
-
-    return shuffledDeck;
-}

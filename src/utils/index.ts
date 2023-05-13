@@ -1,9 +1,7 @@
-import { CARDS_PER_KIND, CARD_KINDS, SCORE_DOWN_MODIFIER, SCORE_UP_MODIFIER } from "../config";
+import { CARD_KINDS, DEFAULT_SHUFFLE_TIMES } from "../config";
 import { Card } from "../store"
-import { Leaderboard } from "../../types";
-import { generateUsername } from "unique-username-generator";
 
-export const getNewDeck = () : Card[] => {
+export const getDefaultDeck = () : Card[] => {
     const couplesByKind = [
         ...CARD_KINDS,
         ...CARD_KINDS
@@ -19,3 +17,22 @@ export const getNewDeck = () : Card[] => {
     }));
 }
 
+const shuffleDeck = (deck: Card[], times = 1) => {
+    let shuffledDeck = [...deck];
+
+    for (let t = 0; t < times; t++) {
+        for (let i = 0; i < shuffleDeck.length; i++) {
+            const j = Math.round(Math.random() * (deck.length - 1));
+            const toSwap = shuffledDeck[j];
+            shuffledDeck[j] = shuffledDeck[i];
+            shuffledDeck[i] = toSwap;   
+        }
+    }
+
+    return shuffledDeck;
+}
+
+export const getNewDeck = () => {
+    const deck = getDefaultDeck();
+    return shuffleDeck(deck, DEFAULT_SHUFFLE_TIMES);
+}
