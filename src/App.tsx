@@ -1,10 +1,14 @@
 import React from 'react';
 import { CardGrid } from './components/CardGrid';
+import { Score } from './components/Score';
+import { EndGame } from './components/EndGame';
 
 function App() {
   return (
     <div className="flex flex-col justify-center items-center">
-     <CardGrid />
+      <Score />
+      <CardGrid />
+      <EndGame />
     </div>
   );
 }

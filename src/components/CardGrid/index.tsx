@@ -1,21 +1,15 @@
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useCallback } from 'react';
 import { Card, useAppStore } from '../../store';
-import { DEFAULT_SHUFFLE_TIMES } from '../../config';
+import { SCORE_DOWN_MODIFIER, SCORE_UP_MODIFIER } from '../../config';
 
 
 export const CardGrid = () => {
     const cards = useAppStore(state => state.cards);
-    const shuffleCards = useAppStore(state => state.shuffleCards);
     const flipCard = useAppStore(state => state.flipCard);
     const cardShown = useAppStore(state => state.cardShown);
     const setCardShown = useAppStore(state => state.setCardShown);
     const setCardHidden = useAppStore(state => state.setCardHidden);
-    useEffect(() => {
-        shuffleCards(DEFAULT_SHUFFLE_TIMES);
-    }, [shuffleCards]);
-    const shuffleCardsMemo = useMemo(() => {
-        return () => shuffleCards(DEFAULT_SHUFFLE_TIMES);
-    }, [shuffleCards]);
+    const updateScore = useAppStore(state => state.updateScore);
     const flipCardMemo = useCallback( (card: Card) => {
         return () =>  {
             // if card is already flipped, do nothing
@@ -26,6 +20,7 @@ export const CardGrid = () => {
                 setCardHidden(cardShown);
                 setCardHidden(card);
                 setCardShown(null);
+                updateScore(SCORE_UP_MODIFIER);
                 return;
             };
             // this is the first card we have flipped
@@ -37,8 +32,9 @@ export const CardGrid = () => {
             setCardShown(null);
             flipCard(card);
             flipCard(cardShown);
+            updateScore(SCORE_DOWN_MODIFIER)
         }
-    }, [cardShown, flipCard, setCardHidden, setCardShown]);
+    }, [cardShown, flipCard, setCardHidden, setCardShown, updateScore]);
     
     const getCardClasses = useCallback((card: Card) => {
         const baseClasses = 'aspect-square flex place-items-center place-content-center border rounded-md cursor-pointer';
@@ -49,7 +45,6 @@ export const CardGrid = () => {
 
     return (
         <>
-            <button onClick={shuffleCardsMemo}>Shuffle</button>
             <div className='grid grid-cols-4 w-2/5 gap-4'>
                 {
                     cards.map((card) => {

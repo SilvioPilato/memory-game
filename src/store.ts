@@ -1,5 +1,8 @@
 import { create } from 'zustand'
-
+import { CARD_KINDS } from './config';
+import { getNewDeck } from './utils';
+import {Leaderboard} from '../types';
+import { createJSONStorage, persist } from 'zustand/middleware';
 export type Card = {
     id: number,
     hidden: boolean,
@@ -8,153 +11,50 @@ export type Card = {
     frontImage: string,
     rearImage: string,
 }
-export type CardKind = "red" | "blue" | "green" | "yellow" | "black" | "white" | "purple" | "orange";
+export type CardKind = typeof CARD_KINDS[number];
 export type AppStore = {
+    score: number,
     cards: Card[],
     cardShown: Card | null,
+    modalShown: boolean,
+    leaderboard: Leaderboard,
     shuffleCards: (times: number) => void,
     setCardShown: (card: Card | null) => void,
     setCardHidden: (card: Card) => void,
     flipCard: (card: Card) => void,
+    updateScore: (amount: number) => void,
+    showModal: () => void,
+    hideModal: () => void,
+    startNewGame: () => void,
+    setLeaderboard: (leaderboard: Leaderboard) => void,
 }
 
-export const useAppStore = create<AppStore>((set) => ({
-    cards: [
+export const useAppStore = create<AppStore>()(
+    persist(
+        (set, get) => {
+            console.log(get());
+            return {
+                cards: getNewDeck(),
+                score: 0,
+                cardShown: null,
+                modalShown:  false,
+                leaderboard: [],
+                setCardShown: (card: Card | null) => set({ cardShown: card }),
+                setCardHidden: (card: Card) => set((state) => ({ cards: state.cards.map((c) => c.id === card.id ? { ...c, hidden: true } : c) })),
+                shuffleCards: (times) => set((state) => ({ cards: shuffleDeck(state.cards, times) })),
+                updateScore: (amount: number) => set((state) => ({ score: state.score + amount })),
+                flipCard: (card) => set((state) => ({ cards: state.cards.map((c) => c.id === card.id ? { ...c, activeSide: c.activeSide === "front" ? "rear" : "front" } : c) })),
+                showModal: () => set({ modalShown: true }),
+                hideModal: () => set({ modalShown: false }),
+                startNewGame: () => set({ score: 0, cards: getNewDeck(), modalShown: false, cardShown: null }),
+                setLeaderboard: (leaderboard) => set({ leaderboard }),
+            }},  
         {
-            id: 1,
-            hidden: false,
-            activeSide: "rear",
-            kind: "red",
-            frontImage:  "https://i.imgur.com/8X9Q2a5.png",
-            rearImage : "https://i.imgur.com/8X9Q2a5.png",
-        },
-        {
-            id: 2,
-            hidden: false,
-            activeSide: "rear",
-            kind: "blue",
-            frontImage:  "https://i.imgur.com/8X9Q2a5.png",
-            rearImage : "https://i.imgur.com/8X9Q2a5.png",
-        },
-        {
-            id: 3,
-            hidden: false,
-            activeSide: "rear",
-            kind: "green",
-            frontImage:  "https://i.imgur.com/8X9Q2a5.png",
-            rearImage : "https://i.imgur.com/8X9Q2a5.png",
-        },
-        {
-            id: 4,
-            hidden: false,
-            activeSide: "rear",
-            kind: "yellow",
-            frontImage:  "https://i.imgur.com/8X9Q2a5.png", 
-            rearImage : "https://i.imgur.com/8X9Q2a5.png",
-        },
-        {
-            id: 5,
-            hidden: false,
-            activeSide: "rear",
-            kind: "black",
-            frontImage:  "https://i.imgur.com/8X9Q2a5.png",
-            rearImage : "https://i.imgur.com/8X9Q2a5.png",
-        },
-        {
-            id: 6,
-            hidden: false,
-            activeSide: "rear",
-            kind: "white",
-            frontImage:  "https://i.imgur.com/8X9Q2a5.png",
-            rearImage : "https://i.imgur.com/8X9Q2a5.png",
-        },
-        {
-            id: 7,
-            hidden: false,
-            activeSide: "rear",
-            kind: "purple",
-            frontImage:  "https://i.imgur.com/8X9Q2a5.png",
-            rearImage : "https://i.imgur.com/8X9Q2a5.png",
-        },
-        {
-            id: 8,
-            hidden: false,
-            activeSide: "rear",
-            kind: "orange",
-            frontImage:  "https://i.imgur.com/8X9Q2a5.png", 
-            rearImage : "https://i.imgur.com/8X9Q2a5.png",
-        },
-        {
-            id: 9,
-            hidden: false,
-            activeSide: "rear",
-            kind: "red",
-            frontImage:  "https://i.imgur.com/8X9Q2a5.png",
-            rearImage : "https://i.imgur.com/8X9Q2a5.png",
-        },
-        {
-            id: 10,
-            hidden: false,
-            activeSide: "rear",
-            kind: "blue",
-            frontImage:  "https://i.imgur.com/8X9Q2a5.png",
-            rearImage : "https://i.imgur.com/8X9Q2a5.png",
-        },
-        {
-            id: 11,
-            hidden: false,
-            activeSide: "rear",
-            kind: "green",
-            frontImage:  "https://i.imgur.com/8X9Q2a5.png",
-            rearImage : "https://i.imgur.com/8X9Q2a5.png",
-        },
-        {
-            id: 12,
-            hidden: false,
-            activeSide: "rear",
-            kind: "yellow",
-            frontImage:  "https://i.imgur.com/8X9Q2a5.png", 
-            rearImage : "https://i.imgur.com/8X9Q2a5.png",
-        },
-        {
-            id: 13,
-            hidden: false,
-            activeSide: "rear",
-            kind: "black",
-            frontImage:  "https://i.imgur.com/8X9Q2a5.png",
-            rearImage : "https://i.imgur.com/8X9Q2a5.png",
-        },
-        {
-            id: 14,
-            hidden: false,
-            activeSide: "rear",
-            kind: "white",
-            frontImage:  "https://i.imgur.com/8X9Q2a5.png",
-            rearImage : "https://i.imgur.com/8X9Q2a5.png",
-        },
-        {
-            id: 15,
-            hidden: false,
-            activeSide: "rear",
-            kind: "purple",
-            frontImage:  "https://i.imgur.com/8X9Q2a5.png",
-            rearImage : "https://i.imgur.com/8X9Q2a5.png",
-        },
-        {
-            id: 16,
-            hidden: false,
-            activeSide: "rear",
-            kind: "orange",
-            frontImage:  "https://i.imgur.com/8X9Q2a5.png", 
-            rearImage : "https://i.imgur.com/8X9Q2a5.png",
-        },  
-    ],
-    cardShown: null,
-    setCardShown: (card: Card | null) => set({ cardShown: card }),
-    setCardHidden: (card: Card) => set((state) => ({ cards: state.cards.map((c) => c.id === card.id ? { ...c, hidden: true } : c) })),
-    shuffleCards: (times) => set((state) => ({ cards: shuffleDeck(state.cards, times) })),
-    flipCard: (card) => set((state) => ({ cards: state.cards.map((c) => c.id === card.id ? { ...c, activeSide: c.activeSide === "front" ? "rear" : "front" } : c) })),
-}))
+            name: 'memoryStorage',
+            storage: createJSONStorage(() => localStorage),
+        }
+    )
+);
 
 const shuffleDeck = (deck: Card[], times = 1) => {
     let shuffledDeck = [...deck];
