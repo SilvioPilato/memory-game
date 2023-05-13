@@ -30,8 +30,7 @@ export type AppStore = {
 
 export const useAppStore = create<AppStore>()(
     persist<AppStore>(
-        (set, get) => {
-            console.log(get());
+        (set) => {
             return {
                 cards: getNewDeck(),
                 score: 0,
