@@ -18,8 +18,6 @@ app.get('/leaderboard', (_, res) => {
 });
 app.put('/leaderboard', (req, res) => {
     const { username, score } = req.body;
-    console.log(req.body)
-    console.log(username, score);
     leaderboard.push({ username, score });
     res.json(leaderboard.sort((a, b) => b.score - a.score));
 });
