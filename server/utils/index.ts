@@ -2,7 +2,7 @@ import { CARD_KINDS, SCORE_DOWN_MODIFIER, SCORE_UP_MODIFIER } from "../../src/co
 import { Leaderboard } from "../../types";
 import { generateUsername } from "unique-username-generator";
 
-export const getRandomLeaderboard = (users = 10, maxWrongMoves = 7): Leaderboard => {
+export const getRandomLeaderboard = (users = 5, maxWrongMoves = 7): Leaderboard => {
     const leaderboard: Leaderboard = [];
     const maxScore = CARD_KINDS.length * SCORE_UP_MODIFIER;
     // Add a random score to each user
