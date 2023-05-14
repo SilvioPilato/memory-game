@@ -1,3 +1,17 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+body {
+  background-color: #bae6fd;
+}
+
+@layer components {
+    .card-back {
+        background-color: #be123c;
+        opacity: 0.9;
+        background-image:  radial-gradient(#ffffff 0.9500000000000001px, transparent 0.9500000000000001px), radial-gradient(#ffffff 0.9500000000000001px, #be123c 0.9500000000000001px);
+        background-size: 38px 38px;
+        background-position: 0 0,19px 19px;
+    }
+}
