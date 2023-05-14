@@ -8,8 +8,6 @@ export type Card = {
     hidden: boolean,
     activeSide: "front" | "rear",
     kind: CardKind,
-    frontImage: string,
-    rearImage: string,
 }
 export type CardKind = typeof CARD_KINDS[number];
 export type AppStore = {
@@ -26,6 +24,7 @@ export type AppStore = {
     hideModal: () => void,
     startNewGame: () => void,
     setLeaderboard: (leaderboard: Leaderboard) => void,
+    resetDeckSides: () => void,
 }
 
 export const useAppStore = create<AppStore>()(
@@ -45,6 +44,7 @@ export const useAppStore = create<AppStore>()(
                 hideModal: () => set({ modalShown: false }),
                 startNewGame: () => set({ score: 0, cards: getNewDeck(), modalShown: false, cardShown: null }),
                 setLeaderboard: (leaderboard) => set({ leaderboard }),
+                resetDeckSides: () => set((state) => ({ cards: state.cards.map((c) => ({ ...c, activeSide: "rear" })) })),
             }},  
         {
             name: 'memoryStorage',

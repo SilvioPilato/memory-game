@@ -12,8 +12,6 @@ export const getDefaultDeck = () : Card[] => {
         hidden: false,
         activeSide: "rear",
         kind,
-        frontImage:  "https://i.imgur.com/8X9Q2a5.png",
-        rearImage : "https://i.imgur.com/8X9Q2a5.png",
     }));
 }
 
